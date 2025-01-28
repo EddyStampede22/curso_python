@@ -10,6 +10,7 @@ def main(m,b):
     #print(Y)
     coordenadas = list(zip(X,Y))
     print(coordenadas)
+    funciones.graficar_linea(X,Y,m,b)
 
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Calcula las coordenadas de una linea recta')
