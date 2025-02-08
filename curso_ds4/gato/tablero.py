@@ -2,6 +2,7 @@
 Tablero.py: Dibuja el tablero del juego del gato
 '''
 import random 
+
 def dibuja_tablero(simbolos:dict):
     '''
     Dibuja el tablero del juego del gato
@@ -14,6 +15,7 @@ def dibuja_tablero(simbolos:dict):
           {simbolos['7']} | {simbolos['8']} | {simbolos['9']}
           '''
     )
+
 def ia(simbolos:dict):
     '''Estrategia de la computadora'''
     ocupado = True
@@ -22,6 +24,7 @@ def ia(simbolos:dict):
         if simbolos[x] not in ['X','O']:
             simbolos[x]='O'
             ocupado = False
+
 def usuario(simbolos:dict):
     '''Estrategia del usuario'''
     ocupado = True
@@ -36,6 +39,7 @@ def usuario(simbolos:dict):
                 print('Ta ocupado')
         else:
             print('del 1 al 9, pesado')
+
 def juego(simbolos:dict):
     '''juego del gato'''
     lista_combinaciones=[
@@ -78,6 +82,35 @@ def checa_ganador(simbolos:dict,combinaciones:list):
         if simbolos[c[0]] == simbolos[c[1]] == simbolos[c[2]]:
             return simbolos[c[0]]
     return None
+
+def actualizar_score(score:dict,ganador:str):
+    '''Actualiza el score'''
+    X=score["X"]
+    O=score["O"]
+    g = ganador
+    if g is not None:
+        print(f'El ganador es {g}')
+        if g == 'X':
+            X["G"]+=1
+            O["P"]+=1
+        elif g == 'O':
+            O["G"]+=1
+            X["P"]+=1
+        else:
+            X["E"]+=1
+            O["E"]+=1
+    else:
+        print('Empate')
+        X["E"]+=1
+        O["E"]+=1
+
+def despliega_tablero(score:dict):
+    '''Despliega el tablero de score'''
+    print(f'''
+      X | G: {score["X"]["G"]} | P:{score["X"]["P"]} | E:{score["X"]["E"]}
+      O | G: {score["O"]["G"]} | P:{score["O"]["P"]} | E:{score["O"]["E"]}
+      ''')
+    
 if __name__== '__main__':
     numeros =[str(i) for i in range(1,10)]
     dic_simbolos={x:x for x in numeros}
