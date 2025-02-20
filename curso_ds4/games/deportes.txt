@@ -1,0 +1,5 @@
+Sport(name='Football',players=11,league='NFL')
+Sport(name='Baseball',players=9,league='LMP')
+Sport(name='Soccer',players=11,league='Liga Mx')
+Sport(name='Basketball',players=5,league='NBA')
+Sport(name='Soccer',players=11,league='FIFA')
