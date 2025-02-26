@@ -13,6 +13,9 @@ class Athlete:
 
     def display(self):
         print(f"{self.name}")
+    
+    def to_json(self):
+        return {"name":self.name}
 
 if __name__=="__main__":
     a =Athlete("Dieguito Maradona")
