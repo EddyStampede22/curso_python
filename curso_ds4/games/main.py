@@ -24,13 +24,36 @@ def main(archivo_torneo:str):
         ]
         players_espania=['Casillas','Ramos','Pique','Alba','Iniesta','Silva','Isco','Busquets'
                          ,'Costa','Morata','Asensio']
+        
+        players_brazil =['Neymar','Coutinho','Marcelo','Casemiro','Alisson','Jesus','Paulinho','Thiago',
+                         'Silva','Firminho','Danilo']
+        players_argentina=['Messi','Aguero','Di Maria','Mascherano','Higuain','Dybala','Otamendi','Romero'
+                           ,'Rojo','Banega','Fazio']
+        
+        lista_brazil =[Athlete(x) for x in players_brazil]
+        lista_argentina =[Athlete(x) for x in players_argentina]
         lista_mexico = [Athlete(x) for x in players_mexico ]
         lista_espania = [Athlete(x) for x in players_espania]
         soccer = Sport("Soccer",11,"FIFA")
         mexico = Team("Mexico",soccer,lista_mexico)
         espania = Team("España",soccer,lista_espania)
-        juego = Game(mexico,espania)
-        torneo = [juego.to_json()]
+        brazil =Team("Brazil",soccer,lista_brazil)
+        argentina = Team("Argentina",soccer,lista_argentina)
+        equipos =[mexico,espania,brazil,argentina]
+        d ={}
+        for local in equipos:
+            for visitantes in equipos:
+                if local != visitantes:
+                    juego = Game(local,visitantes)
+                    partido = f'{local}-{visitantes}'
+                    partido2 = f'{visitantes}-{local}'
+                    if partido not in d and partido2 not in d:
+                        d[partido] = juego.to_json()
+
+       
+        torneo = list(d.values())
+        #juego = Game(mexico,espania)
+        #torneo = [juego.to_json()]
         archivo_torneo = "torneo.json"
         with open(archivo_torneo,"w",encoding='utf8') as f:
             json.dump(torneo,f,ensure_ascii=False,indent=4)
