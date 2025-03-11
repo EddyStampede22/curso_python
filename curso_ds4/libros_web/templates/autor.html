@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Libros Web - Búsqueda por autor</title>
+    </head>
+    <body>
+        <h1>Libros Web</h1>
+        <h2>Busqueda por autor</h2>
+        <p>Busca una o más palabras en el autor </p>
+        <form action="/autor" method="post">
+            <label for="autor">Autor:</label>
+            <input type="text" name="autor" id="autor">
+            <input type="submit" value="Buscar">
+        </form>
+        <ul>
+            {% for libro in lista_libros %}
+                <li><a href="/libro/{{libro.id}}">{{ libro.title }}</a> - {{libro.author}}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/titulo">Búsqueda por titulo</a></li>
+            <li><a href="/letra">Desplegar por letra</a></li>
+        </ul>
+    </body>
+</html>

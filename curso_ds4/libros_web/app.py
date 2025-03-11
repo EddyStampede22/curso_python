@@ -44,5 +44,16 @@ def busqueda_letra(letra:str):
     resultado = fn.libros_empiezan_con(lista_libros, letra)
     return render_template('letra.html', lista_libros=resultado)
 
+@app.route('/autor', methods =['GET','POST'])
+def busqueda_autor():
+    ''' Página de búsqueda por autor '''
+    resultado = []
+    if request.method == 'POST':
+        autor = request.form['autor']
+        resultado = fn.busca_en_diccionario(diccionario_autores, autor)
+        print(autor)
+        print(resultado)
+    return render_template('autor.html', lista_libros=resultado)
+
 if __name__ == '__main__':
     app.run(debug=True)
