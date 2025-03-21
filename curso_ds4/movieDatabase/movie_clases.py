@@ -71,7 +71,7 @@ class User:
         self.username = username
         self.nombre_completo = nombre_completo
         self.email = email
-        self.password = self.hash_password(password)
+        self.password =password
     
     def hash_password(self,password):
         ''' Método para encriptar la contraseña'''
@@ -140,13 +140,36 @@ class SistemaCine:
         ids_actores = [relacion.id_estrella for relacion in self.relaciones.values() if relacion.id_pelicula == id_pelicula]
         return [self.actores[id_estrella] for id_estrella in ids_actores]
     
+    def guardar_csv(self, archivo, objetos):
+        if not objetos:
+            return
+        with open(archivo, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=next(iter(objetos.values())).to_dict().keys())
+            writer.writeheader()
+            for obj in objetos.values():
+                writer.writerow(obj.to_dict())
+
+    def login(self, username, password):
+        user = self.usuarios.get(username)
+        if user and user.password == user.hash_password(password):
+            self.usuario_actual = user
+            return True
+        return False
     
+    def agregar_actor(self, nombre, fecha_nacimiento, ciudad_nacimiento, url_imagen):
+        if self.usuario_actual:
+            new_id = self.idx_actor + 1
+            self.idx_actor = new_id
+            actor = Actor(new_id, nombre, fecha_nacimiento, ciudad_nacimiento, url_imagen, self.usuario_actual.username)
+            self.actores[actor.id_estrella] = actor
+    
+
 if __name__ == '__main__':
     sistema = SistemaCine()
     sistema.cargar_csv('datos/movies_db - actores.csv', Actor)
     sistema.cargar_csv('datos/movies_db - peliculas.csv', Pelicula)
     sistema.cargar_csv('datos/movies_db - relacion.csv', Relacion)
-    sistema.cargar_csv('datos/movies_db - users.csv', User)
+    sistema.cargar_csv('datos/movies_db - users_hashed.csv', User)
     lista_peliculas = sistema.obtener_peliculas_por_actor(11)
     for pelicula in lista_peliculas:
         print(f"{pelicula.id_pelicula}:{pelicula.titulo_pelicula} ({pelicula.fecha_lanzamiento.year})")
@@ -157,10 +180,25 @@ if __name__ == '__main__':
     lista_actores = sistema.obtener_actores_por_pelicula(71)
     for actores in lista_actores:
         print(f"{actores.id_estrella}:{actores.nombre} ({actores.fecha_nacimiento.year})")
+    '''    for u in sistema.usuarios.values():
+        u.password = u.hash_password(u.password)
+    
+    archivo_hashed = 'datos/movies_db - users_hashed.csv'
+    sistema.guardar_csv(archivo_hashed,sistema.usuarios) 
+    print(f'Archivo {archivo_hashed} guardado!')
+
+    print("Listo!")
+   
+    '''
     u =sistema.usuarios['Edd']
     print(u.username)
     print(u.password)
     print(u.email)
     print(u.nombre_completo)
-    print(f'password: {u.hash_password(u.password)}')    
-    print("Listo!")
+    exito = sistema.login('Edd', '12345')
+    print(exito)
+
+    if exito:
+        sistema.agregar_actor('Danny Devito', '1944-11-17', 'Municipio de Neptune, Nueva Jersey, Estados Unidos', 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTUYnnlauMTfiBrwbgsDxHSHazxanRx2QUaAad2ZFLbG7xwRdIPHMwVwPO53OU78FICeN0slZ3jrmj43C4')
+        archivo_actores = 'datos/movies_db - actores.csv'
+        sistema.guardar_csv(archivo_actores,sistema.actores)
