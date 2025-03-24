@@ -162,14 +162,44 @@ class SistemaCine:
             self.idx_actor = new_id
             actor = Actor(new_id, nombre, fecha_nacimiento, ciudad_nacimiento, url_imagen, self.usuario_actual.username)
             self.actores[actor.id_estrella] = actor
-    
 
+    def agregar_pelicula(self, titulo_pelicula, fecha_lanzamiento, url_poster):
+        if self.usuario_actual:
+            new_id = self.idx_pelicula + 1
+            self.idx_pelicula = new_id
+            pelicula = Pelicula(new_id, titulo_pelicula, fecha_lanzamiento, url_poster)
+            self.peliculas[pelicula.id_pelicula] = pelicula
+    
+    def agregar_relacion(self, id_pelicula, id_estrella):
+        if self.usuario_actual:
+            new_id = self.idx_relacion + 1
+            self.idx_relacion = new_id
+            relacion = Relacion(new_id, id_pelicula, id_estrella)
+            self.relaciones[relacion.id_relacion] = relacion
+    
+    def agregar_usuario(self, username, nombre_completo, email, password):
+        if self.usuario_actual:
+            if username not in self.usuarios:
+                user = User(username, nombre_completo, email, password)
+                password = user.hash_password(user.password)
+                self.usuarios[user.username] = user
+    
+    def buscar_pelicula_por_titulo(self, titulo_parcial):
+        return [pelicula for pelicula in self.peliculas.values() if titulo_parcial.lower() in pelicula.titulo_pelicula.lower()]
+    
+    def buscar_actor_por_nombre(self, nombre_parcial):
+        return [actor for actor in self.actores.values() if nombre_parcial.lower() in actor.nombre.lower()]
+    
 if __name__ == '__main__':
     sistema = SistemaCine()
-    sistema.cargar_csv('datos/movies_db - actores.csv', Actor)
-    sistema.cargar_csv('datos/movies_db - peliculas.csv', Pelicula)
-    sistema.cargar_csv('datos/movies_db - relacion.csv', Relacion)
-    sistema.cargar_csv('datos/movies_db - users_hashed.csv', User)
+    archivo_actores = 'datos/movies_db - actores.csv'
+    archivo_peliculas = 'datos/movies_db - peliculas.csv'
+    archivo_relacion = 'datos/movies_db - relacion.csv'
+    archivo_usuarios = 'datos/movies_db - users_hashed.csv'
+    sistema.cargar_csv(archivo_actores, Actor)
+    sistema.cargar_csv(archivo_peliculas, Pelicula)
+    sistema.cargar_csv(archivo_relacion, Relacion)
+    sistema.cargar_csv(archivo_usuarios, User)
     lista_peliculas = sistema.obtener_peliculas_por_actor(11)
     for pelicula in lista_peliculas:
         print(f"{pelicula.id_pelicula}:{pelicula.titulo_pelicula} ({pelicula.fecha_lanzamiento.year})")
@@ -199,6 +229,20 @@ if __name__ == '__main__':
     print(exito)
 
     if exito:
-        sistema.agregar_actor('Danny Devito', '1944-11-17', 'Municipio de Neptune, Nueva Jersey, Estados Unidos', 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTUYnnlauMTfiBrwbgsDxHSHazxanRx2QUaAad2ZFLbG7xwRdIPHMwVwPO53OU78FICeN0slZ3jrmj43C4')
-        archivo_actores = 'datos/movies_db - actores.csv'
-        sistema.guardar_csv(archivo_actores,sistema.actores)
+        #sistema.agregar_actor('Danny Devito', '1944-11-17', 'Municipio de Neptune, Nueva Jersey, Estados Unidos', 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcTUYnnlauMTfiBrwbgsDxHSHazxanRx2QUaAad2ZFLbG7xwRdIPHMwVwPO53OU78FICeN0slZ3jrmj43C4')
+        #sistema.guardar_csv(archivo_actores,sistema.actores)
+        #peli= sistema.agregar_pelicula('Megamente', '2010-12-16', 'https://i.ytimg.com/vi/q5b2f2oFq6o/maxresdefault.jpg')
+        #sistema.agregar_relacion()
+        #sistema.agregar_usuario('chaval','EL Chaval',"Elchavalon@hotmail.com",'12345')
+        #sistema.guardar_csv(archivo_usuarios,sistema.usuarios)
+        #print(f'Archivo {archivo_usuarios} guardado!')
+
+        pelis = sistema.buscar_pelicula_por_titulo('gloria')
+        for peli in pelis:
+            print(peli)
+        print('----------------')
+
+        actores = sistema.buscar_actor_por_nombre('a')
+        for actor in actores:
+            print(actor)
+
